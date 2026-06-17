@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import type { Post } from '../App'
 
 type NewPostData = {
     title: string
@@ -8,7 +9,11 @@ type NewPostData = {
     category: string
 }
 
-function NewPost() {
+type NewPostProps = {
+    addPost: (newPost: Omit<Post, 'id' | 'userId'>) => void
+}
+
+function NewPost({ addPost }: NewPostProps) {
     const [formData, setFormData] = useState<NewPostData>({
         title: '',
         body: '',
@@ -38,11 +43,13 @@ function NewPost() {
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         setSuccess('')
 
         if (!validateForm()) return
+
+        addPost(formData)
 
         setSuccess('New post created successfully!')
 

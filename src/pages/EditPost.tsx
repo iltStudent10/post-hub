@@ -1,50 +1,38 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import type { Post } from '../App'
 
-type Post = {
-    userId: number
-    id: number
-    title: string
-    body: string
+type EditPostProps = {
+    posts: Post[]
+    updatePost: (updatedPost: Post) => void
 }
 
-function EditPost() {
+function EditPost({ posts, updatePost }: EditPostProps) {
     const { id } = useParams<{ id: string }>()
     const [post, setPost] = useState<Post | null>(null)
-    const [title, setTitle] = useState<string | null>('')
-    const [body, setBody] = useState<string | null>('')
-    const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string | null>(null)
+    const [title, setTitle] = useState<string>('')
+    const [body, setBody] = useState<string>('')
+    const [error, setError] = useState<string | null>('')
     const [success, setSuccess] = useState<string | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
 
     useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                setLoading(true)
-                setError('')
+        const postId = Number(id)
+        const foundPost = posts.find((item) => item.id === postId)
 
-                const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch post')
-                }
-
-                const data: Post = await response.json()
-                setPost(data)
-                setTitle(data.title)
-                setBody(data.body)
-            } catch {
-                setError('Unable to load post. Please try again later.')
-            } finally {
-                setLoading(false)
-            }
+        if (!foundPost) {
+            setPost(null)
+            setError('Unable to load post. Please try again later.')
+            return
         }
 
-        fetchPost()
-    }, [id])
+        setPost(foundPost)
+        setTitle(foundPost.title)
+        setBody(foundPost.body)
+        setError('')
+    }, [id, posts])
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         setFormError('')
         setSuccess('')
@@ -53,11 +41,12 @@ function EditPost() {
             setFormError('Title and body are required.')
             return
         }
-        setSuccess("Post updated successfully!")
-    }
 
-    if (loading) {
-        return <p>Loading edit form...</p>
+        if (post) {
+            updatePost({ ...post, title, body })
+        }
+
+        setSuccess("Post updated successfully!")
     }
 
     if (error) {
@@ -80,7 +69,7 @@ function EditPost() {
 
     return (
         <div style={{ padding: '1rem' }}>
-            <Link to={`/posts/${post.id}`}>← Back to Post</Link>
+            <Link to={`/post/${post.id}`}>← Back to Post</Link>
 
              <h1>Edit Post</h1>
             
