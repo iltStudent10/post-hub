@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { Post } from '../App'
 
@@ -9,42 +9,37 @@ type EditPostProps = {
 
 function EditPost({ posts, updatePost }: EditPostProps) {
     const { id } = useParams<{ id: string }>()
-    const [post, setPost] = useState<Post | null>(null)
-    const [title, setTitle] = useState<string>('')
-    const [body, setBody] = useState<string>('')
-    const [error, setError] = useState<string | null>('')
     const [success, setSuccess] = useState<string | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
 
-    useEffect(() => {
-        const postId = Number(id)
-        const foundPost = posts.find((item) => item.id === postId)
+    const postId = Number(id)
+    const post = posts.find((item) => item.id === postId)
+    const error = Number.isNaN(postId)
+        ? 'Invalid post id.'
+        : !post
+            ? 'Unable to load post. Please try again later.'
+            : ''
 
-        if (!foundPost) {
-            setPost(null)
-            setError('Unable to load post. Please try again later.')
-            return
-        }
-
-        setPost(foundPost)
-        setTitle(foundPost.title)
-        setBody(foundPost.body)
-        setError('')
-    }, [id, posts])
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setFormError('')
         setSuccess('')
+
+        if (!post) {
+            setFormError('Post not found.')
+            return
+        }
+
+        const formData = new FormData(e.currentTarget)
+        const title = String(formData.get('title') ?? '').trim()
+        const body = String(formData.get('body') ?? '').trim()
 
         if (!title.trim() || !body.trim()) {
             setFormError('Title and body are required.')
             return
         }
 
-        if (post) {
-            updatePost({ ...post, title, body })
-        }
+        updatePost({ ...post, title, body })
 
         setSuccess("Post updated successfully!")
     }
@@ -79,8 +74,8 @@ function EditPost({ posts, updatePost }: EditPostProps) {
                     <input
                         type="text"
                         id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        name="title"
+                        defaultValue={post.title}
                     />
                 </div>
 
@@ -88,8 +83,8 @@ function EditPost({ posts, updatePost }: EditPostProps) {
                     <label htmlFor="body">Body:</label>
                     <textarea
                         id="body"
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
+                        name="body"
+                        defaultValue={post.body}
                         rows={6}
                         cols={40}
                     />
