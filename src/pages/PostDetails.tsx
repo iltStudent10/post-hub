@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 
 type Post = {
   userId: number;
@@ -54,13 +54,28 @@ function PostDetails() {
     );
   }
 
+  if (!post) {
+    return (
+        <div style={{ padding: '1rem' }}>
+            <p>Post not found.</p>
+            <Link to="/">Back to Home</Link>
+        </div>
+    )
+  }
+
   return (
     <div style={{ padding: '1rem' }}>
         <Link to="/">Back to Home</Link>
+
         <h1>{post.title}</h1>
         <p>{post.body}</p>
         
-        <Link to={`/post/${post.id}/edit`}>Edit Post</Link>
+        <nav style={{ marginBottom: '1rem' }}>
+            <NavLink to="." end style={{ marginRight: '1rem' }}>Overview</NavLink>
+            <NavLink to="comments" style={{ marginRight: '1rem' }}>Comments</NavLink>
+            <NavLink to="edit">Edit Post</NavLink>
+        </nav>
+        <Outlet />
     </div>
   );
 }
