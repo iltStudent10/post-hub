@@ -1,25 +1,10 @@
 import { Routes, Route, Link } from 'react-router-dom'
+import Home from './pages/Home'
+import PostDetails from './pages/PostDetails'
+import NewPost from './pages/NewPost'
+import EditPost from './pages/EditPost'
+import NotFound from './pages/NotFound'
 import './App.css'
-
-function Home() {
-  return <h1>Home Page</h1>
-}
-
-function PostDetails() {
-  return <h1>Post Details Page</h1>
-}
-
-function NewPost() {
-  return <h1>New Post Page</h1>
-}
-
-function EditPost() {
-  return <h1>Edit Post Page</h1>
-}
-
-function NotFound() {
-  return <h1>404 - Page Not Found</h1>
-}
 
 function App() {
 
