@@ -11,7 +11,7 @@ type Post = {
 function PostDetails() {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>('');
 
   useEffect(() => {

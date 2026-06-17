@@ -10,7 +10,7 @@ type Post = {
 
 function Home() {
     const [posts, setPosts] = useState<Post[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
