@@ -11,46 +11,32 @@ function EditPost({ posts, updatePost }: EditPostProps) {
     const { id } = useParams<{ id: string }>()
     const [success, setSuccess] = useState<string | null>(null)
     const [formError, setFormError] = useState<string | null>(null)
+    const [draft, setDraft] = useState<{ title: string; body: string } | null>(null)
 
     const postId = Number(id)
     const post = posts.find((item) => item.id === postId)
-    const error = Number.isNaN(postId)
-        ? 'Invalid post id.'
-        : !post
-            ? 'Unable to load post. Please try again later.'
-            : ''
+
+    const title = draft?.title ?? post?.title ?? ''
+    const body = draft?.body ?? post?.body ?? ''
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setFormError('')
         setSuccess('')
 
-        if (!post) {
-            setFormError('Post not found.')
+        if (!title.trim() || !body.trim()) {
+            setFormError('Title and body are required.')
             return
         }
 
-        const formData = new FormData(e.currentTarget)
-        const title = String(formData.get('title') ?? '').trim()
-        const body = String(formData.get('body') ?? '').trim()
-
-        if (!title.trim() || !body.trim()) {
-            setFormError('Title and body are required.')
+        if (!post) {
+            setFormError('Post not found.')
             return
         }
 
         updatePost({ ...post, title, body })
 
         setSuccess("Post updated successfully!")
-    }
-
-    if (error) {
-        return (
-            <div style={{ padding: '1rem', color: 'red' }}>
-                <p>{error}</p>
-                <Link to="/">Back to Home</Link>
-            </div>
-        )
     }
 
     if (!post) {
@@ -74,8 +60,13 @@ function EditPost({ posts, updatePost }: EditPostProps) {
                     <input
                         type="text"
                         id="title"
-                        name="title"
-                        defaultValue={post.title}
+                        value={title}
+                        onChange={(e) =>
+                            setDraft((prev) => ({
+                                title: e.target.value,
+                                body: prev?.body ?? post?.body ?? '',
+                            }))
+                        }
                     />
                 </div>
 
@@ -83,8 +74,13 @@ function EditPost({ posts, updatePost }: EditPostProps) {
                     <label htmlFor="body">Body:</label>
                     <textarea
                         id="body"
-                        name="body"
-                        defaultValue={post.body}
+                        value={body}
+                        onChange={(e) =>
+                            setDraft((prev) => ({
+                                title: prev?.title ?? post?.title ?? '',
+                                body: e.target.value,
+                            }))
+                        }
                         rows={6}
                         cols={40}
                     />

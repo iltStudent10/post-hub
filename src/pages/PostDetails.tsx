@@ -8,7 +8,7 @@ type PostDetailsProps = {
 function PostDetails({ posts }: PostDetailsProps) {
   const { id } = useParams<{ id: string }>();
   const postId = Number(id)
-  const post = posts.find((item) => item.id === postId) ?? null
+  const post = posts.find((item) => item.id === postId)
 
   if (!post) {
     return (

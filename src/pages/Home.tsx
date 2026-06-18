@@ -4,7 +4,7 @@ import type { Post } from '../App'
 type HomeProps = {
     posts: Post[]
     loading: boolean
-    error: string
+    error: string | null
 }
 
 function Home({ posts, loading, error }: HomeProps) {

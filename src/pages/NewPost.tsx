@@ -2,63 +2,40 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Post } from '../App'
 
-type NewPostData = {
-    title: string
-    body: string
-    author: string
-    category: string
-}
-
 type NewPostProps = {
     addPost: (newPost: Omit<Post, 'id' | 'userId'>) => void
 }
 
 function NewPost({ addPost }: NewPostProps) {
-    const [formData, setFormData] = useState<NewPostData>({
-        title: '',
-        body: '',
-        author: '',
-        category: '',
-    })
-    const [errors, setErrors] = useState<Partial<NewPostData>>({})
+    const [title, setTitle] = useState<string>('')
+    const [body, setBody] = useState<string>('')
+    const [author, setAuthor] = useState<string>('')
+    const [category, setCategory] = useState<string>('')
+    const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }))
-    }
-
-    const validateForm = (): boolean => {
-        const newErrors: Partial<NewPostData> = {}
-        if (!formData.title.trim()) newErrors.title = 'Title is required.'
-        if (!formData.body.trim()) newErrors.body = 'Body is required.'
-        if (!formData.author.trim()) newErrors.author = 'Author is required.'
-        if (!formData.category.trim()) newErrors.category = 'Category is required.'
-
-        setErrors(newErrors)
-
-        return Object.keys(newErrors).length === 0
-    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
+        setError('')
         setSuccess('')
 
-        if (!validateForm()) return
+        if (!title.trim() || !body.trim() || !author.trim() || !category.trim()) {
+            setError('All fields are required.')
+            return
+        }
 
-        addPost(formData)
+        addPost({
+            title,
+            body,
+            author,
+            category,
+        })
 
         setSuccess('New post created successfully!')
-
-        setFormData({
-            title: '',
-            body: '',
-            author: '',
-            category: '',
-        })
+        setTitle('')
+        setBody('')
+        setAuthor('')
+        setCategory('')
     }
 
     return (
@@ -74,11 +51,10 @@ function NewPost({ addPost }: NewPostProps) {
                     <input
                         type="text"
                         id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                    {errors.title && <p style={{ color: 'red' }}>{errors.title}</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
@@ -86,13 +62,12 @@ function NewPost({ addPost }: NewPostProps) {
                     <br/>
                     <textarea
                         id="body"
-                        name="body"
-                        value={formData.body}
-                        onChange={handleChange}
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
                         rows={6}
                         cols={40}
                     />
-                    {errors.body && <p style={{ color: 'red' }}>{errors.body}</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
@@ -101,11 +76,10 @@ function NewPost({ addPost }: NewPostProps) {
                     <input
                         type="text"
                         id="author"
-                        name="author"
-                        value={formData.author}
-                        onChange={handleChange}
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
                     />
-                    {errors.author && <p style={{ color: 'red' }}>{errors.author}</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
@@ -114,11 +88,10 @@ function NewPost({ addPost }: NewPostProps) {
                     <input
                         type="text"
                         id="category"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                     />
-                    {errors.category && <p style={{ color: 'red' }}>{errors.category}</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
 
                 {success && <p style={{ color: 'green' }}>{success}</p>}
