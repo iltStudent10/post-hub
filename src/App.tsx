@@ -5,6 +5,7 @@ import PostDetails from './pages/PostDetails'
 import PostComments from './pages/PostComments'
 import NewPost from './pages/NewPost'
 import EditPost from './pages/EditPost'
+import Contact from './pages/Contact.tsx'
 import NotFound from './pages/NotFound'
 import './App.css'
 
@@ -78,16 +79,18 @@ function App() {
     <div>
       <nav style={{padding: '1rem'}}>
         <Link to="/" style={{marginRight: '1rem'}}>Home</Link>
-        <Link to="/new-post">New Post</Link>
+        <Link to="/new-post" style={{marginRight: '1rem'}}>New Post</Link>
+        <Link to="/contact">Contact</Link>
       </nav>
 
       <Routes>
         <Route path="/" element={<Home posts={posts} loading={loading} error={error} />} />
-        <Route path="/post/:id" element={<PostDetails posts={posts}/>}>
+        <Route path="/posts/:id" element={<PostDetails posts={posts}/> }>
           <Route path="comments" element={<PostComments />} />
           <Route path="edit" element={<EditPost posts={posts} updatePost={updatePost} />} />
         </Route>
         <Route path="/new-post" element={<NewPost addPost={addPost} />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

@@ -50,7 +50,7 @@ function EditPost({ posts, updatePost }: EditPostProps) {
 
     return (
         <div style={{ padding: '1rem' }}>
-            <Link to={`/post/${post.id}`}>← Back to Post</Link>
+            <Link to={`/posts/${post.id}`}>← Back to Post</Link>
 
              <h1>Edit Post</h1>
             

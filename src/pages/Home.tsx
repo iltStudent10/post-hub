@@ -25,7 +25,7 @@ function Home({ posts, loading, error }: HomeProps) {
             <ul>
                 {posts.map(post => (
                     <li key={post.id} style={{ marginBottom: '1rem' }}>
-                        <Link to={`/post/${post.id}`}>
+                        <Link to={`/posts/${post.id}`}>
                             <strong>{post.title}</strong>
                         </Link>
                         <p>{post.body.slice(0, 100)}...</p>
